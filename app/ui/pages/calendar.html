@@ -1,0 +1,51 @@
+<!-- calendar.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+        }
+        #calendar-container {
+            position: absolute;
+            top: 80px;
+            left: 5%;
+            right: 5%;
+            bottom: 10px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        #calendar {
+            width: 100%;
+            height: 85vh;
+            border: none;
+        }
+        .fc-toolbar h2 {
+            font-size: 22px;
+            font-weight: bold;
+            color: black;
+        }
+        .fc-button {
+            background: #007bff;
+            border: none;
+            color: white;
+            border-radius: 6px;
+            padding: 8px 12px;
+        }
+        .fc-button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="calendar-container">
+        <div id="calendar"></div>
+    </div>
+</body>
+</html>

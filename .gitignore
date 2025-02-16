@@ -1,0 +1,23 @@
+# Environment files
+.env
+
+# Python virtual environment
+venv/
+
+# Database files
+*.db
+*.sqlite3
+
+# Compiled Python files
+*.pyc
+*.pyo
+__pycache__/
+
+# Logs
+*.log
+
+.vscode/
+.idea/
+
+migrations/
+alembic.ini
