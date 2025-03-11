@@ -19,30 +19,38 @@ document.addEventListener('DOMContentLoaded', function () {
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay',
         },
-        // 3) Load unbooked slots from the server
         events: async function (fetchInfo, successCallback, failureCallback) {
             try {
                 const response = await fetch('/api/auth/get_slots', {
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     },
                 });
                 const slots = await response.json();
-
-                // Group slots by date
-                const events = Object.entries(
-                    slots.reduce((acc, slot) => {
-                        const date = slot.start_time.split('T')[0]; // Extract the date portion
-                        acc[date] = (acc[date] || 0) + 1; // Count the number of slots per date
-                        return acc;
-                    }, {})
-                ).map(([date, count]) => ({
-                    title: `${count} Slots`, // Display the count
-                    start: date, // Use the date as the event start time
-                    backgroundColor: 'green', // Green background for the event
+        
+                // 🔹 Count slots per day
+                const slotsByDate = {};
+                slots.forEach(slot => {
+                    const date = slot.start_time.split('T')[0];
+                    if (!slotsByDate[date]) {
+                        slotsByDate[date] = { available: 0, booked: 0 };
+                    }
+                    if (slot.is_booked) {
+                        slotsByDate[date].booked += 1;
+                    } else {
+                        slotsByDate[date].available += 1;
+                    }
+                });
+        
+                // 🔹 Create events showing slot count per date
+                let events = Object.keys(slotsByDate).map(date => ({
+                    title: `📅 ${slotsByDate[date].available} Available / ${slotsByDate[date].booked} Booked`,
+                    start: date,
+                    backgroundColor: "#007bff",
+                    textColor: "white",
                 }));
-
+        
                 successCallback(events);
             } catch (error) {
                 console.error('Error fetching slots:', error);
@@ -51,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
         },
     };
 
-    // Unified dateClick handler for both professors and students
+    // 3) dateClick logic
     calendarOptions.dateClick = function (info) {
         if (userRole === 'professor') {
             console.log('Professor clicked a date:', info.dateStr);
@@ -75,19 +83,18 @@ document.addEventListener('DOMContentLoaded', function () {
             })
                 .then(response => response.json())
                 .then(slots => {
-                    // Filter slots for the clicked date
-                    const availableSlots = slots.filter(slot => slot.start_time.startsWith(info.dateStr));
+                    // Filter slots by clicked date
+                    const dateStr = info.dateStr;  // e.g. "2025-02-23"
+                    const availableSlots = slots.filter(slot => slot.start_time.startsWith(dateStr));
                     if (availableSlots.length > 0) {
-                        // Send available slots to the backend to open the modal for booking a meeting
+                        // Pass the slots to open_create_meeting_model
                         fetch('/open_create_meeting_model', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                             },
-                            body: JSON.stringify({
-                                slots: availableSlots,
-                            }),
+                            body: JSON.stringify({ slots: availableSlots }),
                         }).catch(error => console.error('Error opening create meeting modal:', error));
                     } else {
                         alert("No available slots on this date.");
@@ -99,12 +106,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // 6) Create and render the calendar
+    // 4) Create and render the calendar
     const calendar = new FullCalendar.Calendar(calendarEl, calendarOptions);
     calendar.render();
 });
 
-// Optional: Modal utility
+// Optional: custom modal utility, not used by NiceGUI
 function openSlotModal(content) {
     const modal = document.createElement('div');
     modal.id = 'slot-modal';
