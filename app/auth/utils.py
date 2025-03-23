@@ -5,7 +5,6 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 import jwt
 from datetime import datetime
-<<<<<<< HEAD
 from sqlalchemy.orm import Session
 import networkx as nx
 import matplotlib
@@ -17,11 +16,6 @@ from collections import deque, defaultdict
 from app.auth.models import (
     PreferredTime, SlotTime, Meeting, Notification, User, WaitList
 )
-=======
-from app.auth.models import PreferredTime,SlotTime,Meeting,Notification,User
-from sqlalchemy.orm import Session
-
->>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0
 
 load_dotenv()
 
@@ -114,7 +108,6 @@ def build_matching_graph(db: Session):
         slot_to_user[slot_id] = student_id
 
     return user_to_slots, slot_to_user
-<<<<<<< HEAD
 def _find_augmenting_path(user_id, user_to_slots, slot_to_user, visited):
     """
     DFS-like method to find an augmenting path for user_id.
@@ -158,33 +151,10 @@ def _find_augmenting_path(user_id, user_to_slots, slot_to_user, visited):
                 return True
             else:
                 print(f"❌ User {occupant} could not be moved, Slot {slot_id} remains occupied")
-=======
-
-def _find_augmenting_path(user_id, user_to_slots, slot_to_user, visited):
-    """
-    DFS-like method to find an augmenting path for user_id.
-
-    user_id: the user we are trying to match
-    user_to_slots: dict => user_id -> [slot_id, slot_id, ...]
-    slot_to_user: dict => slot_id -> occupant_user_id or None
-    visited: set of slot_ids visited in this DFS iteration
-    """
-    for slot_id in user_to_slots[user_id]:
-        # If we haven't visited this slot yet in this DFS:
-        if slot_id not in visited:
-            visited.add(slot_id)  # Mark the slot as visited
-
-            occupant = slot_to_user[slot_id]  # who is currently in this slot (None if free)
-            # If slot is free OR we can find another slot for the occupant
-            if occupant is None or _find_augmenting_path(occupant, user_to_slots, slot_to_user, visited):
-                slot_to_user[slot_id] = user_id  # Assign slot to this user
-                return True
->>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0
 
     return False
 
 
-<<<<<<< HEAD
 
 
 def max_bipartite_matching(user_to_slots, slot_to_user):
@@ -202,27 +172,10 @@ def max_bipartite_matching(user_to_slots, slot_to_user):
             
             # 🚀 Debug after finding a match
             print(f"✅ Match found! Updated Assignments = {slot_to_user}")
-=======
-def max_bipartite_matching(user_to_slots, slot_to_user):
-    """
-    Runs a bipartite matching using DFS to find augmenting paths.
-    Updates slot_to_user in place.
-
-    Returns an integer: how many total matches (i.e., how many users got a slot).
-    """
-
-    match_count = 0
-    # For each user, try to find an available slot (or reshuffle)
-    for user_id in user_to_slots:
-        visited = set()  # Track visited slots each time we attempt to match user_id
-        if _find_augmenting_path(user_id, user_to_slots, slot_to_user, visited):
-            match_count += 1
->>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0
 
     return match_count
 
 
-<<<<<<< HEAD
 
 
 
@@ -231,29 +184,19 @@ def max_bipartite_matching(user_to_slots, slot_to_user):
 def get_user_assignments(slot_to_user):
     """
     Invert the final slot_to_user mapping into a user->slot dict
-=======
-def get_user_assignments(slot_to_user):
-    """
-    Invert the final slot_to_user mapping into a user->slot dict
-    so we can quickly see which slot a given user ended up with.
->>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0
     """
     user_assignment = {}
     for slot_id, occupant in slot_to_user.items():
         if occupant is not None:
             user_assignment[occupant] = slot_id
-<<<<<<< HEAD
             
     print(f"🚀 DEBUG: Final Assignments = {user_assignment}")  # Force debug print
-=======
->>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0
     return user_assignment
 
 
 
 
 
-<<<<<<< HEAD
 def send_notification(user_id, message, db, reschedule_id):
     notif = Notification(
         user_id=user_id,
@@ -374,18 +317,3 @@ def try_single_user_bfs_in_memory(user_id: int, db: Session):
 
     # 3) Return the new occupant arrangement in memory
     return slot_to_user
-=======
-
-
-def send_notification(user_id, message, db):
-    """
-    Stores notifications in the database and prints to console.
-    """
-    notification = Notification(user_id=user_id, message=message)
-    db.add(notification)
-    db.commit()
-    print(f"✅ Notification saved for User {user_id}: {message}")
-
-
-
->>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0

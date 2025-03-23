@@ -76,7 +76,6 @@ class RescheduleRequest(Base):
     __tablename__ = "reschedule_requests"
 
     id = Column(Integer, primary_key=True, index=True)
-<<<<<<< HEAD
     user_ids = Column(String, nullable=False)  # Store multiple user IDs as a comma-separated string
     current_slot_ids = Column(String, nullable=False)  # Store current slots as a comma-separated string
     new_slot_ids = Column(String, nullable=False)  # Store new slots as a comma-separated string
@@ -92,19 +91,6 @@ class RescheduleRequest(Base):
     # professor = relationship("User", foreign_keys=[professor_ids])
     # current_slot = relationship("SlotTime", foreign_keys=[current_slot_ids])
     # new_slot = relationship("SlotTime", foreign_keys=[new_slot_ids])
-=======
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    current_slot_id = Column(Integer, ForeignKey("slot_times.id"), nullable=False)
-    new_slot_id = Column(Integer, ForeignKey("slot_times.id"), nullable=False)
-    professor_id = Column(Integer, ForeignKey("users.id"), nullable=False)  # ✅ Add this column
-    status = Column(String, default="Pending")
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-    user = relationship("User", foreign_keys=[user_id])
-    professor = relationship("User", foreign_keys=[professor_id])
-    current_slot = relationship("SlotTime", foreign_keys=[current_slot_id])
-    new_slot = relationship("SlotTime", foreign_keys=[new_slot_id])
->>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0
 
 
 
@@ -116,12 +102,7 @@ class Notification(Base):
     message = Column(String, nullable=False)
     is_read = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
-<<<<<<< HEAD
     reschedule_id = Column(Integer, ForeignKey("reschedule_requests.id"), nullable=True)  # Allow NULL values
 
     user = relationship("User", back_populates="notifications")
     reschedule_request = relationship("RescheduleRequest", back_populates="notifications")
-=======
-
-    user = relationship("User", back_populates="notifications")
->>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0
