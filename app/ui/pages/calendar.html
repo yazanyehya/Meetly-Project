@@ -1,51 +1,133 @@
 <!-- calendar.html -->
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
-        }
-        #calendar-container {
-            position: absolute;
-            top: 80px;
-            left: 5%;
-            right: 5%;
-            bottom: 10px;
-            padding: 20px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        #calendar {
-            width: 100%;
-            height: 85vh;
-            border: none;
-        }
-        .fc-toolbar h2 {
-            font-size: 22px;
-            font-weight: bold;
-            color: black;
-        }
-        .fc-button {
-            background: #007bff;
-            border: none;
-            color: white;
-            border-radius: 6px;
-            padding: 8px 12px;
-        }
-        .fc-button:hover {
-            background: #0056b3;
-        }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 5vh;
+        font-family: "Arial", sans-serif;
+        background-color: #f3f3f3;
+      }
+      #calendar-container {
+        position: absolute;
+        top: 2vh;
+        left: 22vw;
+        right: 1vw;
+        bottom: 1vh;
+        padding: 1vw;
+        background: white;
+        border-radius: 1vw;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+      }
+      #calendar {
+        width: 100%;
+        /* height: 85vh; */
+        border: none;
+      }
+      /* Style the FullCalendar Toolbar Title */
+      .fc-toolbar-title {
+        font-size: 24px !important; /* Increase text size */
+        font-weight: bold !important; /* Make text bold */
+        text-transform: uppercase !important; /* Convert text to uppercase */
+        background: linear-gradient(
+          to right,
+          #3b82f6,
+          #8b5cf6
+        ) !important; /* Gradient text */
+        -webkit-background-clip: text !important; /* Apply gradient to text */
+        -webkit-text-fill-color: transparent !important; /* Hide original color */
+        letter-spacing: 1px !important; /* Add spacing between letters */
+        text-align: center !important; /* Center the text */
+        /* padding: 5px 0 !important; Add spacing above and below */
+      }
+
+      .fc-toolbar h2 {
+        font-size: 22px;
+        font-weight: bold;
+        color: black;
+      }
+      .fc-button {
+        background: linear-gradient(135deg, "#f97316, #dc2626");
+        border: none;
+        color: white;
+        border-radius: 6px;
+        /* padding: 8px 12px; */
+      }
+      .fc-button:hover {
+        background: linear-gradient(135deg, "#f97316, #dc2626");
+      }
+      /* Apply gradient to all FullCalendar primary buttons */
+      .fc-next-button,
+      .fc-today-button,
+      .fc-dayGridMonth-button,
+      .fc-timeGridWeek-button,
+      .fc-timeGridDay-button,
+      .fc-prev-button {
+        background: linear-gradient(
+          to bottom,
+          #3b82f6,
+          #8b5cf6
+        ) !important; /* Blue to Purple */
+        color: white !important;
+        border: none !important;
+        /* border-radius: 6px !important; */
+        /* padding: 8px 12px !important; */
+        transition: background 0.3s ease-in-out;
+      }
+
+      /* Reverse the gradient on hover for a dynamic effect */
+      .fc-next-button:hover,
+      .fc-today-button:hover,
+      .fc-dayGridMonth-button:hover,
+      .fc-timeGridWeek-button:hover,
+      .fc-timeGridDay-button:hover {
+        background: linear-gradient(
+          to bottom,
+          #8b5cf6,
+          #3b82f6
+        ) !important; /* Reverse Gradient */
+      }
+
+      /* 🔷 Column Headers (Weekday Names) */
+      .fc-col-header-cell-cushion {
+        font-size: 16px !important;
+        font-weight: bold !important;
+        color: white !important;
+        background: linear-gradient(
+          to bottom,
+          #3b82f6,
+          #6d28d9
+        ) !important; /* Subtle Blue to Deep Purple */
+        width: 100%;
+        height: 100%;
+        border-radius: 6px !important;
+        text-align: center !important;
+      }
+
+      /* 🔹 Day Numbers (Calendar Grid Dates) */
+      .fc-daygrid-day-number {
+        font-size: 14px !important;
+        font-weight: bold !important;
+        color: #333 !important;
+        /* background: #f3f4f6 !important; Soft Light Gray */
+        /* padding: 5px 8px !important; */
+        border-radius: 4px !important;
+        transition: background 0.2s ease-in-out;
+      }
+
+      /* Hover Effect for Day Numbers */
+      .fc-daygrid-day-number:hover {
+        background: #e0e7ff !important; /* Light Pastel Blue */
+        color: #1e40af !important; /* Darker Blue */
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="calendar-container">
-        <div id="calendar"></div>
+      <div id="calendar"></div>
     </div>
-</body>
+  </body>
 </html>

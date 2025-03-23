@@ -1,103 +1,222 @@
-# 🌟 **Meetly Website** 🌟
+# 📆 Meetly — Intelligent Academic Scheduling Platform
 
-## 📖 **Overview**
-Meetly is a simple and user-friendly scheduling platform that helps **lecturers** and **students** connect seamlessly. 
+Welcome to **Meetly** — a smart, full‑stack scheduling solution designed to revolutionize one‑on‑one meeting coordination between students and professors. With its intuitive interface, robust backend, and intelligent matching algorithms, Meetly takes the hassle out of booking, waitlisting, and rescheduling meetings, so you can focus on what really matters: building meaningful academic connections.
 
-- 📅 **Lecturers**: Log in to add available times for meetings.  
-- 🙋‍♂️ **Students**: Log in to view available slots and book a meeting.  
+![WhatsApp Image 2025-03-23 at 03 51 00](https://github.com/user-attachments/assets/4736cb11-55d6-4750-adba-705e7794f962)
+![WhatsApp Image 2025-03-23 at 03 50 34](https://github.com/user-attachments/assets/52b7539a-e555-4b4d-8181-c7c933aa8139)
+![WhatsApp Image 2025-03-23 at 03 51 23](https://github.com/user-attachments/assets/10deb54d-24e5-45af-b2e3-f942c87359d5)
+![WhatsApp Image 2025-03-23 at 03 51 44](https://github.com/user-attachments/assets/fe7697f5-5c36-4863-b5e2-23cfa47c4166)
+
 
 ---
 
-## ✨ **Features**
-- 🔒 **Secure Login & Signup**: Role-based access for lecturers and students.
-- 🗓️ **Calendar Integration**: Interactive calendar to manage time slots.
-- ⚡ **Effortless Booking**: Students can easily book available slots.
-- 🛠️ **Backend Powered by FastAPI**: Robust and secure backend.
-- 💾 **SQLite Database**: Lightweight and easy data storage.
+## 🎯 Why Meetly?
+
+Meetly was created to address common scheduling headaches:
+- **Automate the Booking Process:** Students can reserve slots with just a click.
+- **Maximize Slot Utilization:** Intelligent matching quickly fills freed slots.
+- **Manage Waitlists Effortlessly:** A dynamic FIFO queue ensures fairness.
+- **Seamlessly Handle Rescheduling:** Chain rescheduling with multi‑party approvals prevents missed opportunities.
+- **Respect User Preferences:** Students set preferred times to improve matching accuracy.
+- **Real‑Time Notifications:** Stay informed with live updates on your meeting status.
 
 ---
 
-## 🛠️ **Technologies Used**
-- 🌐 **Frontend**: NiceGUI for an intuitive and modern interface.
-- 🚀 **Backend**: FastAPI for scalability and performance.
-- 🗄️ **Database**: SQLite for local data storage.
-- 🔐 **Authentication**: JWT for secure token-based login.
+## 🏗 System Architecture
+
+Meetly is built on a modern, scalable stack:
+
+- **Frontend:** Built with NiceGUI (Python) and FullCalendar (JavaScript) to deliver a sleek, interactive user experience.
+- **Backend:** Powered by FastAPI, ensuring a secure and efficient API with JWT authentication.
+- **Database:** Uses SQLAlchemy ORM to manage a robust relational schema.
 
 ---
 
-## 🚀 **Getting Started**
+## 🔍 Deep Dive: Core Components
 
-### 1️⃣ **Clone the Repository**
-```bash
-git clone <repository_url>
-cd meetly
-```
+### Backend API (FastAPI)
 
-### 2️⃣ **Set Up Environment**
-- Create a `.env` file and add:
-  ```plaintext
-  SECRET_KEY=
-  ALGORITHM=
-  ACCESS_TOKEN_EXPIRE_MINUTES=
-  DATABASE_URL=
-  ```
+- **Authentication:**  
+  - **JWT-based Login/Signup:** Secure access with role‑based permissions (student vs. professor).
+  - **OAuth2PasswordBearer:** Simplifies token management.
 
-### 3️⃣ **Install Dependencies**
-```bash
-pip install -r requirements.txt
-```
+- **Data Models:**  
+  - **User:** Captures both student and professor profiles.
+  - **SlotTime:** Represents available meeting windows.
+  - **Meeting:** Links students, professors, and slots.
+  - **WaitList:** Manages queued bookings for fully occupied slots.
+  - **PreferredTime:** Stores student availability preferences.
+  - **RescheduleRequest & Notification:** Handle multi‑party swap workflows and alert users of changes.
 
-### 4️⃣ **Run the Project**
-```bash
-uvicorn main:app --reload
-```
+- **Matching Engine:**  
+  - **Bipartite Graph Construction:** Maps students to their preferred slots.
+  - **DFS & BFS Algorithms:**  
+    - **DFS (`_find_augmenting_path`):** Finds augmenting paths to maximize matching.
+    - **BFS (`try_single_user_bfs_in_memory`):** Efficiently seeks the shortest path for waitlisted students.
+  - These algorithms ensure optimal assignment and minimal disruptions.
 
+### Frontend (NiceGUI + FullCalendar)
 
+- **NiceGUI Components:**  
+  - **Login/Signup Pages:** Elegant, responsive pages built entirely in Python.
+  - **Calendar Dashboard:** A dynamic calendar view that aggregates available and booked slots.
+  - **Modals & Dialogs:** Custom dialogs for creating slots, booking meetings, setting preferences, and managing notifications.
+  - **LocalStorage Integration:** Persists JWT tokens, user roles, and IDs for secure API calls.
 
-## 🖥️ **How It Works**
-### 👨‍🏫 **Lecturer**
-1. Log in or sign up.
-2. Add your available time slots.
-3. View and manage student bookings.
-
-### 👨‍🎓 **Student**
-1. Log in or sign up.
-2. Browse available slots for your lecturer.
-3. Book a time and view your confirmed appointments.
+- **FullCalendar Integration:**  
+  - **Interactive Views:** Month view that display real‑time booking data.
+  - **Event Handling:** Date click actions trigger modal dialogs for slot creation or meeting booking.
+  - **Live Updates:** JavaScript functions seamlessly refresh events after any changes.
 
 ---
 
-## 🗂️ **Project Structure**
-```
-meetly/
-├── app/
-│   ├── auth/         # Authentication logic
-│   ├── db.py         # Database setup
-│   ├── main.py       # Application entry point
-├── ui/               # UI components (NiceGUI pages)
-├── static/           # Static files (JS, CSS, images)
-├── .env              # Environment variables
-├── requirements.txt  # Python dependencies
-└── README.md         # Project documentation
-```
+## 📦 Database Schema Overview
+
+| **Table**                | **Purpose**                                           | **Key Columns**                                 |
+|--------------------------|-------------------------------------------------------|-------------------------------------------------|
+| **users**                | Stores student and professor profiles               | `id`, `name`, `email`, `password`, `role`         |
+| **slot_times**           | Represents available meeting slots                  | `id`, `professor_id`, `start_time`, `end_time`, `is_booked` |
+| **meetings**             | Captures confirmed bookings                         | `id`, `slot_id`, `student_id`, `professor_id`, `meeting_details` |
+| **waitlist**             | Queues students for booked slots                    | `id`, `slot_id`, `user_id`, `created_at`          |
+| **preferred_times**      | Records student availability preferences            | `id`, `user_id`, `time_slot`                      |
+| **reschedule_requests**  | Manages chain rescheduling proposals                | `id`, `user_ids`, `current_slot_ids`, `new_slot_ids`, `professor_ids`, `status` |
+| **notifications**        | Delivers in‑app alerts about scheduling changes     | `id`, `user_id`, `message`, `is_read`, `reschedule_id` |
 
 ---
 
-## 🌟 **Future Plans**
-- ✉️ **Email Notifications**: Reminders for upcoming meetings.
-- 🔗 **Calendar Sync**: Integration with Google Calendar.
-- 📊 **Advanced Reports**: Insights on bookings and schedules.
+## ⚙️ API Endpoints
+
+### **Authentication**
+- **POST** `/api/auth/signup`  
+  Create a new user account.
+- **POST** `/api/auth/login`  
+  Authenticate and receive a JWT token.
+
+### **Slots**
+- **POST** `/api/auth/create_slot`  
+  Professors create a new meeting slot.
+- **GET** `/api/auth/get_slots`  
+  Retrieve all slots for calendar display.
+
+### **Meetings**
+- **POST** `/api/auth/book_slot`  
+  Students book an available slot.
+- **GET** `/api/auth/student/meetings`  
+  List meetings booked by a student.
+- **DELETE** `/api/auth/student/meetings/{id}`  
+  Cancel an existing meeting.
+
+### **Waitlist & Reschedule**
+- **POST** `/api/auth/add_to_waitlist`  
+  Join a waitlist for a fully booked slot.
+- **POST** `/api/auth/reschedule_requests/{id}/accept`  
+  Approve a reschedule request.
+- **POST** `/api/auth/reschedule_requests/{id}/reject`  
+  Decline a reschedule request.
+
+### **Preferences**
+- **GET / POST** `/api/auth/users/{user_id}/preferences`  
+  Manage student time preferences.
+
+### **Notifications**
+- **GET** `/api/auth/notifications`  
+  Retrieve notifications.
+- **POST** `/api/auth/notifications/mark_as_read`  
+  Mark a notification as read.
 
 ---
 
-## ❤️ **Contributions Welcome**
-1. Fork this repo.  
-2. Create a new branch.  
-3. Submit a pull request! 🎉  
+## 🖥 Installation & Setup
+
+### Prerequisites
+- Python 3.9+
+- Virtual environment tool (e.g., venv)
+- Database: PostgreSQL for production or SQLite for development
+
+### Steps
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/your-org/meetly.git
+   cd meetly
+   ```
+
+2. **Setup Virtual Environment**
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
+
+3. **Install Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Configure Environment Variables**
+   - Copy `.env.example` to `.env` and set:
+     - `SECRET_KEY`
+     - `DATABASE_URL`
+     - `ACCESS_TOKEN_EXPIRE_MINUTES`
+     - Other necessary variables
+
+5. **Run Database Migrations**
+   ```bash
+   alembic upgrade head
+   ```
+
+6. **Start the Development Server**
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+
+7. **Access the Application**
+   - **Login/Signup:** `http://localhost:8000/`
+   - **Calendar Dashboard:** `http://localhost:8000/calendar`
 
 ---
 
-## 📜 **License**
-Licensed under the MIT License. ✨  
+## 🤖 Matching Algorithms: A Closer Look
 
-Enjoy scheduling smarter with **Meetly**! 🎉
+### **Depth‑First Search (DFS) for Augmenting Paths**
+
+- **Purpose:** To find a sequence of alternating unmatched and matched edges (an *augmenting path*) that can free up a slot for a student.
+- **Process:**
+  1. **For each preferred slot of a student:**  
+     - If the slot is free, assign it immediately.
+     - If occupied, recursively try to move the current occupant to another slot.
+  2. **If the path is found:**  
+     - Update the `slot_to_user` mapping along the path.
+- **Benefit:** Maximizes the overall matching, ensuring more students get a slot.
+
+### **Breadth‑First Search (BFS) for Single‑User Optimization**
+
+- **Purpose:** To quickly find the shortest augmenting path for a single waitlisted student.
+- **Process:**
+  1. **Start from the waitlisted student:**  
+     - Explore their preferred slots.
+  2. **Alternate between students and slots:**  
+     - Track the path using a predecessor map.
+  3. **When a free slot is found:**  
+     - Reconstruct the path and update assignments.
+- **Benefit:** Minimizes the number of swaps needed, providing a quick, fair solution for individual cases.
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! To get started:
+
+1. **Fork the Repository**  
+2. **Create a Feature Branch:**  
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+3. **Commit Your Changes:**  
+   Follow PEP8 and write tests for new functionality.
+4. **Push & Open a Pull Request**
+
+---
+
+## 🌟 Happy Coding!
+
+We hope Meetly inspires you to reimagine scheduling. Your contributions and feedback are always welcome — let's build the future of academic productivity together!
