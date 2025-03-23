@@ -2,10 +2,11 @@
 
 Welcome to **Meetly** — a smart, full‑stack scheduling solution designed to revolutionize one‑on‑one meeting coordination between students and professors. With its intuitive interface, robust backend, and intelligent matching algorithms, Meetly takes the hassle out of booking, waitlisting, and rescheduling meetings, so you can focus on what really matters: building meaningful academic connections.
 
-![WhatsApp Image 2025-03-23 at 03 51 00](https://github.com/user-attachments/assets/4736cb11-55d6-4750-adba-705e7794f962)
-![WhatsApp Image 2025-03-23 at 03 50 34](https://github.com/user-attachments/assets/52b7539a-e555-4b4d-8181-c7c933aa8139)
-![WhatsApp Image 2025-03-23 at 03 51 23](https://github.com/user-attachments/assets/10deb54d-24e5-45af-b2e3-f942c87359d5)
-![WhatsApp Image 2025-03-23 at 03 51 44](https://github.com/user-attachments/assets/fe7697f5-5c36-4863-b5e2-23cfa47c4166)
+![Login Page](./images/image1.jpg)
+![Dashboard](./images/image2.jpg)
+![Booking Modal](./images/image3.jpg)
+![Notifications](./images/image4.jpg)
+
 
 
 ---
