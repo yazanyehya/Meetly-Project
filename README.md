@@ -7,7 +7,29 @@ Welcome to **Meetly** — a smart, full‑stack scheduling solution designed to 
 ![Dashboard](./images/image2.jpg)
 ![Login Page](./images/image1.jpg)
 
-### 🎯 Before & After Matching Algorithm
+---
+
+### 🔄 Matching Algorithm Example
+
+Let’s walk through a real scenario from Meetly’s matching engine:
+
+- **Student 6** wants to book **Slot 30**.
+- But Slot 30 is **already booked** by another student (e.g., Student 3).
+- Instead of rejecting Student 6 or putting them on a waitlist immediately, Meetly's algorithm **tries to reshuffle** the current bookings.
+
+#### 🧠 How it works:
+1. The algorithm checks if **Student 3** (who currently has Slot 30) can be moved to another preferred slot — say **Slot 25**.
+2. If Slot 25 is also taken, it checks if **that student** can move to **another preferred slot** — and so on.
+3. This creates a **chain of possible swaps**, like:
+4. If a free slot is eventually found for the last student in the chain, the algorithm **executes all the swaps**, and **Student 6 gets Slot 30**.
+
+#### ⚙️ Algorithm Details:
+- This process uses **Depth‑First Search (DFS)** to explore possible swap chains.
+- The matching is modeled using a **bipartite graph** between students and available slots.
+
+---
+
+### 📸 Before & After Matching Algorithm
 
 **Before using the matching algorithm:**
 
