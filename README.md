@@ -9,36 +9,38 @@ Welcome to **Meetly** — a smart, full‑stack scheduling solution designed to 
 
 ---
 
+
 ### 🔄 Matching Algorithm Example
 
-Let’s walk through a real scenario from Meetly’s matching engine:
+Let’s explore a real matching scenario from the graph below.
 
-- **Student 6** wants to book **Slot 30**.
-- But Slot 30 is **already booked** by another student (e.g., Student 3).
-- Instead of rejecting Student 6 or putting them on a waitlist immediately, Meetly's algorithm **tries to reshuffle** the current bookings.
+#### ❌ Before Matching (Initial State)
+In the graph below:
 
-#### 🧠 How it works:
-1. The algorithm checks if **Student 3** (who currently has Slot 30) can be moved to another preferred slot — say **Slot 25**.
-2. If Slot 25 is also taken, it checks if **that student** can move to **another preferred slot** — and so on.
-3. This creates a **chain of possible swaps**, like:
-4. If a free slot is eventually found for the last student in the chain, the algorithm **executes all the swaps**, and **Student 6 gets Slot 30**.
-
-#### ⚙️ Algorithm Details:
-- This process uses **Depth‑First Search (DFS)** to explore possible swap chains.
-- The matching is modeled using a **bipartite graph** between students and available slots.
-
----
-
-### 📸 Before & After Matching Algorithm
-
-**Before using the matching algorithm:**
+- **User 6** wants to book **Slot 30**, but it's already taken.
+- All users (User 2 → User 5) are already matched with one of their preferred slots.
+- If we did nothing, User 6 would have to be **waitlisted**.
 
 ![Before Matching](./images/Before_Matching.png)
 
-**After using the matching algorithm:**
+---
+
+#### ✅ After Matching (Reassignment)
+Here’s how the algorithm solves it:
+
+1. **User 6** wants **Slot 30**, but it's taken.
+2. The algorithm tries to **find a chain of moves**:
+   - It checks if the user who owns Slot 30 (**User 5**) can move to another preferred slot.
+   - User 5 can be moved to **Slot 29**, but that’s also taken by **User 4**.
+   - So it checks if **User 4** can move to **Slot 28**, and so on…
+   - Eventually, it finds a free slot at the end of the chain.
+3. Once a free slot is found, the algorithm performs a **series of swaps** so that:
+   - User 6 gets Slot 30
+   - Everyone else is still matched to one of their preferences.
+
+This intelligent reshuffling ensures **maximum satisfaction** and **fairness**.
 
 ![After Matching](./images/After_Matching.png)
-
 
 ---
 
