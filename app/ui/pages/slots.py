@@ -1,67 +1,62 @@
 # app/ui/pages/slots.py
 
-from nicegui import ui, app
+from nicegui import ui
 import httpx
 
-def create_slot_modal():
+def create_slot_modal(date: str):
     """
-    Creates a dialog for professors to create a new slot.
+    Opens a beautifully styled dialog for professors to create a new availability slot on a given date.
     """
     with ui.dialog() as dialog:
-        with ui.card().style("width: 400px;"):
-            ui.label("Create Slot").classes("text-h5 font-bold")
-            start_time = ui.input("Starting Time (HH:MM)").props("type=time").classes("w-full")
-            end_time = ui.input("End Time (HH:MM)").props("type=time").classes("w-full")
-            date_label = ui.label("")
+        with ui.card().style(
+            "width: 420px; border-radius: 12px; "
+            "box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15); "
+            "background: white; padding: 20px;"
+        ):
+            ui.label("🗓 Create New Slot")\
+                .classes("text-h5 font-bold text-center")\
+                .style(
+                    "background: linear-gradient(to right, #3b82f6, #8b5cf6); "
+                    "-webkit-background-clip: text; -webkit-text-fill-color: transparent;"
+                )
+            ui.label(f"📅 Date: {date}").classes("text-md font-semibold mt-2")
 
-            with ui.row().classes("justify-between mt-4"):
-                ui.button(icon='cancel', on_click=dialog.close)\
-                  .classes("bg-gray-500 text-white hover:bg-gray-600")
-                ui.button(icon='add', on_click=lambda: create_slot(start_time, end_time, date_label, dialog))\
-                  .classes("bg-blue-500 text-white hover:bg-blue-600")
+            start_time = ui.input("Start Time (HH:MM)").props("type=time").classes("w-full mt-3")
+            end_time   = ui.input("End Time (HH:MM)").props("type=time").classes("w-full mt-2")
 
-    @app.post("/open_create_slot_modal")
-    async def open_create_slot_modal(data: dict):
-        """
-        Called from scripts.js when user clicks a date in the calendar
-        """
-        date_label.set_text(f"Selected Date: {data['date']}")
-        dialog.open()
+            async def on_create():
+                if not start_time.value or not end_time.value:
+                    ui.notify("⚠ Please fill both start and end times", type="warning")
+                    return
+                await create_slot(date, start_time.value, end_time.value, dialog)
 
-async def create_slot(start_time, end_time, date_label, dialog):
+            with ui.row().classes("justify-between mt-5 w-full"):
+                ui.button("Cancel", on_click=dialog.close)\
+                  .classes("bg-red text-white hover:bg-gray-600 rounded-lg px-4 py-2")
+                ui.button("Create Slot", on_click=on_create)\
+                  .classes("bg-green text-white hover:bg-blue-600 rounded-lg px-4 py-2")
+
+    dialog.open()
+
+
+async def create_slot(date: str, start: str, end: str, dialog):
     """
-    Actually create the slot after the user fills the form.
+    Sends new slot data to the backend API.
     """
-    selected_date = date_label.text.split(': ')[1]  # e.g. "2025-03-02"
-    full_start = f"{selected_date}T{start_time.value}"
-    full_end   = f"{selected_date}T{end_time.value}"
-
-    slot_data = {
-        "start": full_start,
-        "end":   full_end
-    }
-
+    slot_data = {"start": f"{date}T{start}", "end": f"{date}T{end}"}
     try:
         token = await ui.run_javascript("localStorage.getItem('token');")
-        backend_url = "http://127.0.0.1:8000/api/auth/create_slot"
-
         async with httpx.AsyncClient() as client:
             response = await client.post(
-                backend_url,
+                "http://127.0.0.1:8000/api/auth/create_slot",
                 json=slot_data,
-                headers={
-                    "Authorization": f"Bearer {token}",
-                    "Content-Type": "application/json"
-                },
+                headers={"Authorization": f"Bearer {token}"}
             )
-
         if response.status_code == 200:
-            ui.notify("✅ Slot saved successfully", type="positive")
+            ui.notify("✅ Slot created successfully!", type="positive")
             dialog.close()
-            # Refresh the calendar events in the browser
             ui.run_javascript("window.calendar.refetchEvents();")
         else:
-            error_message = response.json().get("detail", "Creating slot failed")
-            ui.notify(f"❌ {error_message}", type="negative")
+            ui.notify(f"❌ {response.json().get('detail', 'Failed to create slot')}", type="negative")
     except Exception as e:
-        ui.notify(f"⚠ Error: {str(e)}", type="negative")
+        ui.notify(f"⚠ Error: {e}", type="negative")
