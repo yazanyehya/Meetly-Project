@@ -7,6 +7,15 @@ Welcome to **Meetly** — a smart, full‑stack scheduling solution designed to 
 ![Dashboard](./images/image2.jpg)
 ![Login Page](./images/image1.jpg)
 
+### 🎯 Before & After Matching Algorithm
+
+**Before using the matching algorithm:**
+
+![Before Matching](./images/Before_Matching.png)
+
+**After using the matching algorithm:**
+
+![After Matching](./images/After_Matching.png)
 
 
 ---
