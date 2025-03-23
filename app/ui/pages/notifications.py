@@ -1,6 +1,7 @@
 from nicegui import ui
 import httpx
 
+<<<<<<< HEAD
 async def fetch_unread_count():
     """Fetch the count of unread notifications from FastAPI."""
     user_id = await ui.run_javascript("localStorage.getItem('user_id');")
@@ -17,6 +18,8 @@ async def fetch_unread_count():
     return 0
 
 
+=======
+>>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0
 async def fetch_notifications():
     """Fetch unread notifications from FastAPI."""
     user_id = await ui.run_javascript("localStorage.getItem('user_id');")
@@ -24,11 +27,15 @@ async def fetch_notifications():
         return []
 
     backend_url = f"http://127.0.0.1:8000/api/auth/notifications?user_id={user_id}"
+<<<<<<< HEAD
     
+=======
+>>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0
     async with httpx.AsyncClient() as client:
         response = await client.get(backend_url)
 
     if response.status_code == 200:
+<<<<<<< HEAD
         data = response.json()
         if isinstance(data, list):
             return data  
@@ -55,6 +62,22 @@ async def respond_to_reschedule(notification_id, response_action):
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {token}"
             }
+=======
+        return response.json().get("notifications", [])
+    return []
+
+async def respond_to_reschedule(notification_id, response):
+    """Send Accept/Reject response for rescheduling."""
+    
+    print(f"🔍 Sending response: {response} for reschedule ID: {notification_id}")  # ✅ Debugging
+
+    backend_url = "http://127.0.0.1:8000/api/auth/response_to_rescheduling"
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            backend_url,
+            json={"reschedule_id": notification_id, "response": response},  # ✅ Ensure JSON format
+            headers={"Content-Type": "application/json"}
+>>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0
         )
 
     if response.status_code == 200:
@@ -63,12 +86,17 @@ async def respond_to_reschedule(notification_id, response_action):
         ui.notify(f"❌ Error: {response.text}", type="negative")
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0
 async def mark_notification_as_read(notification_id):
     """Mark a notification as read in FastAPI."""
     backend_url = "http://127.0.0.1:8000/api/auth/notifications/mark_as_read"
     async with httpx.AsyncClient() as client:
         await client.post(backend_url, json={"notification_id": notification_id})
 
+<<<<<<< HEAD
 
 async def load_notifications(menu):
     """Loads notifications into the menu with updated design."""
@@ -136,3 +164,35 @@ def notification_button():
                 box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.2);
             """) as menu:
                 ui.timer(2, lambda: load_notifications(menu))
+=======
+async def load_notifications(menu):
+    notifications = await fetch_notifications()
+    menu.clear()
+
+    if notifications:
+        for notification in notifications:
+            with menu:
+                ui.label(notification["message"])
+
+                # ✅ Accept Button
+                ui.button("✅ Accept", on_click=lambda n=notification["id"]: respond_to_reschedule(n, "accept"))\
+                    .classes("bg-green-500 text-white hover:bg-green-600")
+
+                # ❌ Reject Button
+                ui.button("❌ Reject", on_click=lambda n=notification["id"]: respond_to_reschedule(n, "reject"))\
+                    .classes("bg-red-500 text-white hover:bg-red-600")
+
+    else:
+        ui.label("✅ No new notifications")
+
+
+def notification_button():
+    """Creates a menu item to show notifications inside the menu."""
+
+    with ui.row():
+        with ui.button(icon="notifications").classes("bg-blue-500 text-white"):
+            with ui.menu().props('auto-close') as menu:
+                ui.label("🔔 Notifications").classes("text-bold")
+                ui.separator()
+                ui.timer(2, lambda: load_notifications(menu))  # Auto-refresh notifications
+>>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0

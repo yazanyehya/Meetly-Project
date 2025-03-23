@@ -5,6 +5,7 @@ import httpx
 def preferences_dialog():
     dialog = ui.dialog()
 
+<<<<<<< HEAD
     with dialog:
         # Card with a unified design: no extra padding at the top, rounded corners, and overflow hidden.
         with ui.card().style("width: 400px; padding: 0; overflow: hidden; border-radius: 8px;"):
@@ -29,6 +30,25 @@ def preferences_dialog():
                     ui.button('Save',
                             on_click=lambda: add_preferred_time(datetime_input, times_container)) \
                   .classes("bg-green text-white hover:bg-blue-600 rounded-lg px-4 py-2")
+=======
+    # We'll make the card a bit bigger:
+    with dialog:
+        with ui.card().style("width: 400px; padding: 20px;"):
+            ui.label("Preferred Times").classes("text-h5 font-bold")
+
+            # Container to show current preferred times
+            times_container = ui.column().classes("gap-2")
+
+            # Instead of a text input, use a date-time picker
+            # Browser will show a combined date/time field
+            datetime_input = ui.input(label="Select Date & Time").props('type=datetime-local').classes("w-full")
+
+            with ui.row().classes("justify-between mt-4"):
+                ui.button("Close", on_click=dialog.close).classes("bg-gray-500 text-white hover:bg-gray-600")
+                ui.button("Save", on_click=lambda: add_preferred_time(datetime_input, times_container))\
+                  .classes("bg-blue-500 text-white hover:bg-blue-600")
+
+>>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0
     async def show_dialog():
         """Open dialog and fetch existing preferences for display."""
         times_container.clear()
@@ -46,6 +66,10 @@ def preferences_dialog():
                 response = await client.get(backend_url, headers={"Authorization": f"Bearer {token}"})
             if response.status_code == 200:
                 data = response.json()
+<<<<<<< HEAD
+=======
+                # data might be { "preferred_times": ["2025-03-10T14:30", ...] } or just a list
+>>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0
                 if isinstance(data, dict) and "preferred_times" in data:
                     times_list = data["preferred_times"]
                 elif isinstance(data, list):
@@ -53,6 +77,7 @@ def preferences_dialog():
                 else:
                     times_list = []
 
+<<<<<<< HEAD
                 if times_list:
                     with times_container:
                         for t in times_list:
@@ -66,6 +91,13 @@ def preferences_dialog():
                                         on_click=lambda pref_id=t["id"], cont=times_container: delete_preference(pref_id, cont)
                                     )
 
+=======
+                # Show each preferred time
+                if times_list:
+                    with times_container:
+                        for t in times_list:
+                            ui.label(f"• {t}")
+>>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0
                 else:
                     with times_container:
                         ui.label("No preferred times found")
@@ -77,6 +109,7 @@ def preferences_dialog():
 
         dialog.open()
 
+<<<<<<< HEAD
     async def delete_preference(pref_id, container):
         token = await ui.run_javascript("localStorage.getItem('token')")
         user_id = await ui.run_javascript("localStorage.getItem('user_id')")
@@ -90,6 +123,8 @@ def preferences_dialog():
         else:
             ui.notify("❌ Failed to delete", type="negative")
 
+=======
+>>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0
     async def add_preferred_time(date_input, container):
         """Take a single date/time from the input and send to the server."""
         raw_value = date_input.value.strip()  # e.g. "2025-03-10T14:30"
@@ -97,6 +132,13 @@ def preferences_dialog():
             ui.notify("Please select a date/time.", type="warning")
             return
 
+<<<<<<< HEAD
+=======
+        # We'll just send it as a single-element list to the backend.
+        # The backend can parse it however it wants (Time, DateTime, etc.)
+        times = [raw_value]
+
+>>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0
         token = await ui.run_javascript("localStorage.getItem('token');")
         user_id = await ui.run_javascript("localStorage.getItem('user_id');")
         if not user_id or not token:
@@ -108,7 +150,11 @@ def preferences_dialog():
             async with httpx.AsyncClient() as client:
                 response = await client.post(
                     backend_url,
+<<<<<<< HEAD
                     json={"time_slots": [raw_value]},  # Correct key matching FastAPI.
+=======
+                    json={"times": times},
+>>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0
                     headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
                 )
 
@@ -116,7 +162,11 @@ def preferences_dialog():
                 ui.notify("Preferred time added!", type="positive")
                 date_input.set_value("")
                 container.clear()
+<<<<<<< HEAD
                 await show_dialog()  # Refresh to see updated list.
+=======
+                await show_dialog()  # Refresh to see updated list
+>>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0
             else:
                 detail = response.json().get("detail", "Unknown error")
                 ui.notify(f"Failed to add preference: {detail}", type="negative")
@@ -132,4 +182,8 @@ def preferences_button():
     show_dialog_fn = preferences_dialog()
     ui.button("Set Preferred Times", on_click=show_dialog_fn)\
       .props("rounded")\
+<<<<<<< HEAD
       .classes("bg-green-500 text-white hover:bg-green-600 transition duration-300")
+=======
+      .classes("bg-green-500 text-white hover:bg-green-600")
+>>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0

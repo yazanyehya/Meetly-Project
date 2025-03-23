@@ -36,6 +36,7 @@ async def display_meetings(container):
         return
 
     for meeting in meetings:
+<<<<<<< HEAD
         with ui.card().classes("w-full p-4 mb-3 rounded-lg shadow-md")\
             .style("border: 1px solid #e5e7eb;"):
             with ui.row().classes("flex items-center justify-between"):
@@ -81,6 +82,30 @@ async def delete_meeting(meeting_id, container):
             with ui.row().classes("justify-end px-4 py-3 items-center"):
                 ui.button("Yes, Delete", on_click=lambda: confirm_delete(meeting_id, container, dialog))\
                   .classes("bg-green text-white hover:bg-blue-600 rounded-lg px-4 py-2")
+=======
+        with ui.row().classes("items-center gap-2"):
+            ui.label(f"{meeting['meeting_purpose']} - {meeting['start_time']} ({meeting['professor_name']})")
+            ui.button(
+                icon='delete',
+                on_click=lambda m=meeting['id']: delete_meeting(m, container),
+                color="red"
+            )
+
+async def delete_meeting(meeting_id, container):
+    """
+    Show a confirmation dialog, then delete the meeting if confirmed.
+    """
+    with ui.dialog() as dialog:
+        with ui.card().style("width: 400px; padding: 10px;"):
+            ui.label("⚠ Confirm Deletion").classes("text-h5 font-bold")
+            ui.label("Are you sure you want to delete this meeting?")
+
+            with ui.row().classes("justify-between mt-4"):
+                ui.button("❌ No", on_click=dialog.close)\
+                  .classes("bg-gray-500 text-white hover:bg-gray-600")
+                ui.button("✅ Yes", on_click=lambda: confirm_delete(meeting_id, container, dialog))\
+                  .classes("bg-red-500 text-white hover:bg-red-600")
+>>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0
 
     dialog.open()
 
@@ -113,6 +138,7 @@ async def open_meetings_dialog():
     Opens a dialog that shows the user's meetings.
     """
     with ui.dialog() as dialog:
+<<<<<<< HEAD
         with ui.card().style("width: 400px; padding: 0; overflow: hidden; border-radius: 8px;"):
             # Header with a gradient background, title, and close button.
             with ui.row().classes("w-full flex items-center justify-between px-4 py-2")\
@@ -129,6 +155,13 @@ async def open_meetings_dialog():
             with ui.column().style("padding: 10px;"):
                 container = ui.column()  # Container for the meetings list.
                 await display_meetings(container)
+=======
+        with ui.card().style("width: 400px; padding: 10px;"):
+            ui.label("Your Meetings")
+            container = ui.column()  # Container for meetings list
+            await display_meetings(container)
+            ui.button(icon='cancel', on_click=dialog.close)
+>>>>>>> c50f9b7b695724d550c0e94564b32694d02128e0
     dialog.open()
 
 def meetings_button():
